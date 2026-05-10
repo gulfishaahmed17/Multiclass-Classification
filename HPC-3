@@ -1,0 +1,69 @@
+#include <iostream> 
+#include <vector> 
+#include <omp.h> 
+#include <limits> 
+ 
+using namespace std; 
+ 
+int main() { 
+    int n; 
+    cout << "Enter the size of the array: "; 
+    cin >> n; 
+ 
+    vector<int> arr(n); 
+    cout << "Enter " << n << " elements:\n"; 
+    for (int i = 0; i < n; i++) 
+        cin >> arr[i]; 
+ 
+    int min_val = numeric_limits<int>::max(); 
+    int max_val = numeric_limits<int>::min(); 
+    long long sum = 0; 
+ 
+    #pragma omp parallel for reduction(min:min_val) reduction(max:max_val) reduction(+:sum) 
+    for (int i = 0; i < n; i++) { 
+        if (arr[i] < min_val) min_val = arr[i]; 
+        if (arr[i] > max_val) max_val = arr[i]; 
+        sum += arr[i]; 
+    } 
+ 
+    double average = static_cast<double>(sum) / n; 
+ 
+    cout << "\nMinimum value: " << min_val << endl; 
+    cout << "Maximum value: " << max_val << endl; 
+    cout << "Sum: " << sum << endl; 
+    cout << "Average: " << average << endl; 
+ 
+    return 0; 
+} 
+
+
+
+
+
+
+
+Step 1: Save File
+Save the file as:
+reduction.cpp
+Step 2: Compile the Program
+In terminal write:
+g++ -fopenmp reduction.cpp -o reduction
+Explanation:
+Part	Meaning
+g++	C++ compiler
+-fopenmp	Enables OpenMP support
+reduction.cpp	Your source file
+-o reduction	Creates executable named reduction
+Step 3: Run the Program
+./reduction
+Step 4: Enter Input
+
+Example:
+
+5
+10 20 30 40 50
+Expected Output
+Minimum value: 10
+Maximum value: 50
+Sum: 150
+Average: 30
